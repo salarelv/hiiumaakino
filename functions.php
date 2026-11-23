@@ -1,5 +1,6 @@
 <?php
 require_once get_template_directory() . '/inc/upcoming-films.php';
+require_once get_template_directory() . '/inc/programme.php';
 
 /**
  * Theme setup.
@@ -10,6 +11,7 @@ function tailpress_setup() {
 	register_nav_menus(
 		array(
 			'primary' => __( 'Primary Menu', 'tailpress' ),
+			'footer'  => __( 'Footer Menu', 'tailpress' ),
 		)
 	);
 
@@ -38,14 +40,47 @@ add_action( 'after_setup_theme', 'tailpress_setup' );
 
 /**
  * Enqueue theme assets.
+ *
+ * assets/refresh.css and assets/refresh.js (header, footer, front page) load everywhere.
+ * The other pages still use the old Tailwind build (css/app.css) for their content.
  */
 function tailpress_enqueue_scripts() {
-	$theme = wp_get_theme();
+	$theme   = wp_get_theme();
+	$dir     = get_template_directory();
+	$uri     = get_template_directory_uri();
+	$is_home = hiiumaa_kino_is_programme_page();
+	$deps    = array();
 
-	wp_enqueue_style( 'tailpress', tailpress_asset( 'css/app.css' ), array(), filemtime( get_stylesheet_directory() . '/css/app.css' ) );
-	wp_enqueue_style( 'satoshi', tailpress_asset( 'fonts/Satoshi/stylesheet.css' ), array(), $theme->get( 'Version' ) );
-	wp_enqueue_script( 'tailpress', tailpress_asset( 'js/app.js' ), array(), $theme->get( 'Version' ) );
+	if ( ! $is_home ) {
+		wp_enqueue_style( 'tailpress', tailpress_asset( 'css/app.css' ), array(), filemtime( $dir . '/css/app.css' ) );
+		wp_enqueue_style( 'satoshi', tailpress_asset( 'fonts/Satoshi/stylesheet.css' ), array(), $theme->get( 'Version' ) );
+		$deps = array( 'tailpress', 'satoshi' );
+	}
+
+	wp_enqueue_style( 'hiiumaa-kino-refresh', $uri . '/assets/refresh.css', $deps, filemtime( $dir . '/assets/refresh.css' ) );
+	wp_enqueue_script( 'hiiumaa-kino-refresh', $uri . '/assets/refresh.js', array(), filemtime( $dir . '/assets/refresh.js' ), array( 'strategy' => 'defer', 'in_footer' => true ) );
 }
+
+/** Is this the front page programme ("Kinokava ja tulevased filmid" template)? */
+function hiiumaa_kino_is_programme_page() {
+	return is_page_template( 'page-programme.php' );
+}
+
+/**
+ * The front page has its own filters, so it does not need the Kinola filter form assets
+ * (kinola.css, select2, kinola.js and jQuery).
+ */
+add_filter( 'kinola/assets/css', function ( $load ) {
+	return hiiumaa_kino_is_programme_page() ? false : $load;
+} );
+add_filter( 'kinola/assets/select2', function ( $load ) {
+	return hiiumaa_kino_is_programme_page() ? false : $load;
+} );
+add_action( 'wp_enqueue_scripts', function () {
+	if ( hiiumaa_kino_is_programme_page() ) {
+		wp_dequeue_script( 'kinola' );
+	}
+}, 100 );
 
 add_action( 'wp_enqueue_scripts', 'tailpress_enqueue_scripts' );
 
@@ -126,14 +161,7 @@ add_filter('theme_page_templates', 'add_new_template');
 
 add_filter( 'nav_menu_submenu_css_class', 'tailpress_nav_menu_add_submenu_class', 10, 3 );
 
-function change_logo_class( $html ) {
-	$html = str_replace( 'custom-logo-link', 'flex items-center', $html );
-    $html = str_replace( 'custom-logo', 'mr-3 h-6 sm:h-12 object-contain object-center lg:w-auto', $html );
-	
-    return $html;
-}
-
-add_filter( 'get_custom_logo', 'change_logo_class' );
+// The logo markup is built in hiiumaa_kino_logo() (inc/programme.php).
 
 function change_kinola_dir() {
 	$dir[] = get_template_directory() . "/kinola-templates/";
