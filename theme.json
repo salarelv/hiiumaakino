@@ -1,0 +1,84 @@
+{
+  "version": 1,
+  "settings": {
+    "layout": {
+      "contentSize": "960px",
+      "wideSize": "1280px"
+    },
+    "color": {
+      "palette": [
+        {
+          "name": "Primary",
+          "slug": "primary",
+          "color": "#0ac989"
+        },
+        {
+          "name": "Secondary",
+          "slug": "secondary",
+          "color": "#06347d"
+        },
+        {
+          "name": "Dark",
+          "slug": "dark",
+          "color": "#181716"
+        },
+        {
+          "name": "Light",
+          "slug": "light",
+          "color": "#1d83ad"
+        }
+
+      ]
+    },
+    "typography": {
+      "fontFamilies": [
+				{
+					"fontFamily": "\"Satoshi\", serif",
+					"name": "Satoshi",
+					"slug": "satoshi",
+					"fontFace": [
+						{
+							"fontFamily": "Satoshi",
+							"fontWeight": "400",
+							"fontStyle": "normal",
+							"fontStretch": "normal",
+							"src": [ "file:./fonts/Satoshi/fonts/Satoshi-Regular.woff2" ]
+						}
+					]
+        }
+      ],
+      "fontSizes": [
+        {
+          "name": "Small",
+          "slug": "small",
+          "size": "0.875rem"
+        },
+        {
+          "slug": "regular",
+          "name": "Regular",
+          "size": "1.5rem"
+        },
+        {
+          "slug": "large",
+          "name": "Large",
+          "size": "1.125rem"
+        },
+        {
+          "slug": "xl",
+          "name": "XL",
+          "size": "1.25rem"
+        },
+        {
+          "slug": "xxl",
+          "name": "2XL",
+          "size": "1.5rem"
+        },
+        {
+          "slug": "xxxl",
+          "name": "3XL",
+          "size": "1.875rem"
+        }
+      ]
+    }
+  }
+}

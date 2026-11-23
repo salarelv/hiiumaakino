@@ -1,0 +1,10 @@
+alignfull
+alignwide
+alignnone
+aligncenter
+alignright
+wp-block-button
+wp-caption
+wp-caption-text
+lg:w-auto
+justify-end
